@@ -133,3 +133,4 @@ The authority dashboard, report detail and status-update endpoints verify report
 
 ### Important security notes
 This is an educational prototype. Before public deployment, configure a strong random `PATHGUARD_SECRET`, HTTPS and secure cookies, CSRF protection, rate limiting, secure upload validation/re-encoding, backups, and tests. The local seeded credentials are public demo credentials. Existing role values are preserved (`citizen`/`admin`); an `authority_profiles` row distinguishes road authorities from Super Admins, avoiding a destructive rebuild of the existing `users` table.
+gunicorn
