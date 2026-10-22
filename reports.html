@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Explore reports · PathGuard AI{% endblock %}
+{% block content %}
+<section class="page-hero"><div class="eyebrow">COMMUNITY REPORTS</div><h1>Road issues, <span class="gradient-text">in one place.</span></h1><p>Explore reports submitted by the community. Risk scores are heuristic estimates and are not official safety assessments.</p></section>
+<section class="toolbar-row"><div class="search-box"><span>⌕</span><input id="reportSearch" placeholder="Search category, location or description..."></div><select id="statusFilter" class="filter-select"><option value="">All statuses</option>{% for s in statuses %}<option>{{ s }}</option>{% endfor %}</select><select id="sortFilter" class="filter-select"><option value="newest">Newest first</option><option value="risk">Highest risk first</option></select></section>
+<div class="report-grid report-grid-page" id="reportGrid">
+{% for r in reports %}
+<article class="report-card searchable-report" data-search="{{ (r.category ~ ' ' ~ r.location_name ~ ' ' ~ r.description)|lower }}" data-status="{{ r.status }}" data-risk="{{ r.risk_score }}" data-date="{{ r.created_at }}">
+{% if r.image_filename %}<img class="report-thumb" src="{{ url_for('static', filename='uploads/' ~ r.image_filename) }}" alt="Road hazard photo">{% else %}<div class="report-thumb thumb-placeholder"><span>⌖</span><small>ROAD REPORT</small></div>{% endif %}
+<div class="report-card-inner"><div class="report-card-top"><span class="category-pill">{{ r.category }}</span><span class="risk-pill {{ 'risk-high' if r.risk_score >= 70 else ('risk-medium' if r.risk_score >= 50 else 'risk-low') }}">Risk {{ r.risk_score }}</span></div><h3><a href="{{ url_for('report_detail', report_id=r.id) }}">PG-{{ '%04d'|format(r.id) }} · {{ r.location_name or 'Road location' }}</a></h3><p>{{ r.description|truncate(120) }}</p><div class="report-card-bottom"><span class="status status-{{ r.status|lower|replace(' ','-') }}">{{ r.status }}</span><a href="{{ url_for('report_detail', report_id=r.id) }}">View details ↗</a></div></div></article>
+{% endfor %}
+</div>
+<div class="empty-state" id="noReports" {% if reports %}hidden{% endif %}><div class="empty-icon">⌕</div><h3>No reports found</h3><p>Try changing your search or filters.</p></div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/reports.js') }}"></script>{% endblock %}

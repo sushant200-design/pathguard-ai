@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}PathGuard AI — Safer roads start here{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-copy">
+    <div class="eyebrow"><span class="pulse-dot"></span> AI-ASSISTED CIVIC ROAD SAFETY</div>
+    <h1>Better roads begin<br>with <span class="gradient-text">being heard.</span></h1>
+    <p class="hero-lead">Report road hazards, discover problems around you, and help your community prioritize safer journeys.</p>
+    <div class="hero-actions"><a class="btn btn-primary" href="{{ url_for('report_hazard') }}">Report a road hazard <span>↗</span></a><a class="btn btn-quiet" href="{{ url_for('hazard_map') }}">Explore live map <span>→</span></a></div>
+    <div class="trust-row"><span class="avatar-stack"><i>✓</i><i>⌖</i><i>+</i></span><span>Community-powered · Location-aware · Action-focused</span></div>
+  </div>
+  <div class="hero-visual">
+    <div class="visual-glow"></div><div class="map-preview">
+      <div class="map-grid"></div><div class="map-road road-one"></div><div class="map-road road-two"></div><div class="map-road road-three"></div>
+      <span class="map-pin pin-a"><b>!</b></span><span class="map-pin pin-b"><b>!</b></span><span class="map-pin pin-c"><b>!</b></span><span class="map-pin pin-d"><b>!</b></span>
+      <div class="map-label label-a"><span class="mini-dot red"></span> High priority <b>82</b></div>
+      <div class="map-label label-b"><span class="mini-dot amber"></span> Road damage <b>61</b></div>
+      <div class="map-overlay-card"><div class="overlay-icon">⌖</div><div><b>Road safety, in focus</b><small>Reports mapped for action</small></div><span class="overlay-arrow">↗</span></div>
+      <div class="map-compass">N<br>↑</div>
+    </div>
+    <div class="floating-stat"><span class="floating-icon">✓</span><div><strong>{{ stats.resolved }}</strong><small>Issues resolved</small></div><span class="stat-up">↗</span></div>
+    <div class="hero-note">Illustrative visual · Live reports appear on the map page</div>
+  </div>
+</section>
+<section class="stats-strip">
+  <div><span class="stat-icon blue">⌖</span><div><strong>{{ stats.total }}</strong><small>Total reports</small></div></div>
+  <div><span class="stat-icon orange">◷</span><div><strong>{{ stats.open }}</strong><small>Open issues</small></div></div>
+  <div><span class="stat-icon green">✓</span><div><strong>{{ stats.resolved }}</strong><small>Resolved issues</small></div></div>
+  <div class="stat-note"><span class="pulse-dot"></span> Community-powered road intelligence</div>
+</section>
+<section class="section-block">
+  <div class="section-heading"><div><div class="eyebrow">HOW IT WORKS</div><h2>From road problem to <span class="gradient-text">real progress.</span></h2></div><a class="text-link" href="{{ url_for('reports') }}">View all reports →</a></div>
+  <div class="feature-grid">
+    <article class="feature-card"><span class="feature-number">01</span><div class="feature-icon icon-blue">⌁</div><h3>Report it</h3><p>Share a photo, choose the hazard type, and pin the exact location.</p></article>
+    <article class="feature-card"><span class="feature-number">02</span><div class="feature-icon icon-purple">◎</div><h3>Map the issue</h3><p>Explore nearby reports and understand where road problems are happening.</p></article>
+    <article class="feature-card"><span class="feature-number">03</span><div class="feature-icon icon-orange">↗</div><h3>Prioritize action</h3><p>Transparent risk scoring helps administrators review urgent reports first.</p></article>
+    <article class="feature-card"><span class="feature-number">04</span><div class="feature-icon icon-green">✓</div><h3>Track progress</h3><p>Follow status updates and see when an issue has been marked resolved.</p></article>
+  </div>
+</section>
+<section class="recent-section">
+  <div class="section-heading"><div><div class="eyebrow">COMMUNITY PULSE</div><h2>Recently reported hazards</h2></div><a class="text-link" href="{{ url_for('reports') }}">Explore reports →</a></div>
+  {% if recent %}
+  <div class="report-grid">
+    {% for r in recent %}
+    <article class="report-card">
+      <div class="report-card-top"><span class="category-pill">{{ r.category }}</span><span class="risk-pill {{ 'risk-high' if r.risk_score >= 70 else ('risk-medium' if r.risk_score >= 50 else 'risk-low') }}">Risk {{ r.risk_score }}</span></div>
+      <h3><a href="{{ url_for('report_detail', report_id=r.id) }}">PG-{{ '%04d'|format(r.id) }} · {{ r.location_name or 'Reported road location' }}</a></h3>
+      <p>{{ r.description|truncate(115) }}</p>
+      <div class="report-card-bottom"><span class="status status-{{ r.status|lower|replace(' ','-') }}">{{ r.status }}</span><a href="{{ url_for('report_detail', report_id=r.id) }}">Details ↗</a></div>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state"><div class="empty-icon">⌖</div><h3>Your community map starts here</h3><p>No reports yet. Be the first to report a road hazard.</p><a class="btn btn-primary" href="{{ url_for('report_hazard') }}">Submit first report</a></div>
+  {% endif %}
+</section>
+<section class="cta-band"><div><div class="eyebrow">EVERY REPORT MAKES A DIFFERENCE</div><h2>See a hazard? Help make it visible.</h2><p>One clear report can help a whole community.</p></div><a class="btn btn-light" href="{{ url_for('report_hazard') }}">Report a hazard <span>↗</span></a></section>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Report PG-{{ '%04d'|format(report.id) }} · PathGuard AI{% endblock %}
+{% block head %}<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">{% endblock %}
+{% block content %}
+<section class="page-hero compact"><a class="back-link" href="{{ url_for('reports') }}">← All reports</a><div class="eyebrow">REPORT DETAILS · PG-{{ '%04d'|format(report.id) }}</div><h1>{{ report.location_name or report.category }} <span class="gradient-text">report.</span></h1><p>Submitted {{ report.created_at }} · Reported by {{ report.reporter or 'Community member' }}</p></section>
+<section class="detail-grid"><article class="panel detail-main">
+{% if report.image_filename %}<img class="detail-photo" src="{{ url_for('static', filename='uploads/' ~ report.image_filename) }}" alt="Submitted road hazard photo">{% else %}<div class="detail-photo photo-placeholder">No photo attached</div>{% endif %}
+<div class="detail-tags"><span class="category-pill">{{ report.category }}</span><span class="status status-{{ report.status|lower|replace(' ','-') }}">{{ report.status }}</span><span class="risk-pill {{ 'risk-high' if report.risk_score >= 70 else ('risk-medium' if report.risk_score >= 50 else 'risk-low') }}">Risk score {{ report.risk_score }}/100</span></div>
+<h2>What was reported</h2><p class="detail-description">{{ report.description }}</p>
+{% if report.resolution_note %}<div class="resolution-box"><b>Latest admin note</b><p>{{ report.resolution_note }}</p></div>{% endif %}
+<div class="detail-actions">{% if nav_user %}<form method="post" action="{{ url_for('support_report', report_id=report.id) }}"><button class="btn btn-outline" type="submit">♡ Support this report</button></form>{% else %}<a class="btn btn-outline" href="{{ url_for('login') }}">Log in to support</a>{% endif %}<a class="btn btn-primary" href="{{ url_for('hazard_map') }}">View on map ↗</a></div>
+</article><aside class="panel detail-side"><div class="eyebrow">LOCATION</div><h3>{{ report.location_name or 'Reported location' }}</h3><p class="coords">{{ '%.5f'|format(report.latitude) }}, {{ '%.5f'|format(report.longitude) }}</p><div id="detailMap" class="detail-map" data-lat="{{ report.latitude }}" data-lon="{{ report.longitude }}"></div><a class="text-link" target="_blank" rel="noopener" href="https://www.openstreetmap.org/?mlat={{ report.latitude }}&mlon={{ report.longitude }}#map=17/{{ report.latitude }}/{{ report.longitude }}">Open in OpenStreetMap ↗</a><div class="detail-meta"><span>Report ID</span><b>PG-{{ '%04d'|format(report.id) }}</b><span>Created</span><b>{{ report.created_at }}</b><span>Last updated</span><b>{{ report.updated_at }}</b></div></aside></section>
+{% endblock %}
+{% block scripts %}<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script src="{{ url_for('static', filename='js/detail-map.js') }}"></script>{% endblock %}

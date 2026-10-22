@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}PathGuard AI{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="{{ url_for('index') }}"><span class="brand-mark">P</span><span>PathGuard<span class="brand-ai"> AI</span><small>SMARTER ROADS. SAFER JOURNEYS.</small></span></a>
+  <button class="mobile-menu" id="menuToggle" aria-label="Toggle navigation">☰</button>
+  <nav id="mainNav">
+    <a href="{{ url_for('reports') }}">Explore reports</a>
+    <a href="{{ url_for('hazard_map') }}">Live map</a>
+    {% if nav_user %}
+      <a href="{{ url_for('dashboard') }}">My dashboard</a>
+      {% if nav_is_super_admin %}<a href="{{ url_for('admin_dashboard') }}">Super Admin</a><a href="{{ url_for('admin_authorities') }}">Authorities</a>{% elif nav_is_authority %}<a href="{{ url_for('authority_dashboard') }}">Authority portal</a>{% endif %}
+      <a class="nav-cta" href="{{ url_for('report_hazard') }}">+ Report hazard</a>
+      <a href="{{ url_for('logout') }}">Log out</a>
+    {% else %}
+      <a href="{{ url_for('login') }}">Log in</a>
+      <a class="nav-cta" href="{{ url_for('register') }}">Join PathGuard</a>
+    {% endif %}
+  </nav>
+</header>
+<main>
+  <div class="flash-wrap">
+    {% for category, message in get_flashed_messages(with_categories=true) %}
+      <div class="flash {{ category }}">{{ message }}<button onclick="this.parentElement.remove()" aria-label="Dismiss">×</button></div>
+    {% endfor %}
+  </div>
+  {% block content %}{% endblock %}
+</main>
+<footer class="footer"><div><a class="brand footer-brand" href="{{ url_for('index') }}"><span class="brand-mark">P</span><span>PathGuard<span class="brand-ai"> AI</span></span></a><p>Technology for safer, more accountable roads.</p></div><div class="footer-right">Student mini-project prototype · Verify reports before real-world action</div></footer>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

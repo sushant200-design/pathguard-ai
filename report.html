@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Report a hazard · PathGuard AI{% endblock %}
+{% block head %}<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">{% endblock %}
+{% block content %}
+<section class="page-hero compact"><div class="eyebrow">CITIZEN REPORTING</div><h1>Make the hazard <span class="gradient-text">visible.</span></h1><p>Share clear details so the right people can review the issue.</p></section>
+<section class="form-page-grid"><form method="post" enctype="multipart/form-data" class="panel form-stack">
+<div class="panel-title"><span class="step-badge">01</span><div><h2>Hazard details</h2><p>Describe what you noticed.</p></div></div>
+<label>Hazard category<select name="category" required><option value="">Choose a category</option>{% for c in categories %}<option>{{ c }}</option>{% endfor %}</select></label>
+<label>Location label<input name="location_name" maxlength="180" placeholder="e.g. Near college main gate"></label>
+<label>Description<textarea name="description" required maxlength="1500" rows="4" placeholder="Describe the road condition, approximate size, and any safety concern..."></textarea></label>
+<div class="upload-box"><label class="upload-label"><span class="upload-icon">↑</span><strong>Upload a road photo</strong><span>JPG, PNG or WEBP · Max 8 MB</span><input type="file" name="image" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" id="reportImage"></label><div id="imagePreview" class="image-preview"></div></div>
+<div class="panel-title panel-title-spaced"><span class="step-badge">02</span><div><h2>Pin the location</h2><p>Click the map or use your device location.</p></div></div>
+<div class="map-toolbar"><button type="button" class="btn btn-outline btn-small" id="useMyLocation">◎ Use my location</button><span id="coordsLabel">Select a point on the map</span></div>
+<div id="reportMap" class="form-map"></div>
+<input type="hidden" name="latitude" id="latitude" required><input type="hidden" name="longitude" id="longitude" required>
+<button type="submit" class="btn btn-primary btn-full">Submit road hazard <span>↗</span></button><p class="form-footnote">Only report genuine issues. Submitted reports should be verified by the responsible authority.</p>
+</form>
+<aside class="side-info"><div class="side-info-icon">✦</div><h3>Help your report make an impact</h3><p>Accurate locations and useful descriptions help administrators assess and prioritize issues.</p><div class="tip-row"><span>01</span><div><b>Choose a clear category</b><small>Select the closest matching hazard type.</small></div></div><div class="tip-row"><span>02</span><div><b>Pin the exact spot</b><small>Place the marker on the road segment.</small></div></div><div class="tip-row"><span>03</span><div><b>Add useful context</b><small>Mention nearby landmarks and visible risk.</small></div></div><div class="privacy-note">⌖ Location is used to place the report on the map. This prototype does not continuously track your location.</div></aside></section>
+{% endblock %}
+{% block scripts %}<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script src="{{ url_for('static', filename='js/report-map.js') }}"></script>{% endblock %}

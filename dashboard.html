@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}My dashboard · PathGuard AI{% endblock %}
+{% block content %}
+<section class="page-hero"><div class="eyebrow">YOUR PATHGUARD</div><h1>Welcome back, <span class="gradient-text">{{ nav_user.name.split(' ')[0] }}.</span></h1><p>Track the reports you've submitted and follow their progress.</p><div class="hero-actions"><a class="btn btn-primary" href="{{ url_for('report_hazard') }}">+ New report</a><a class="btn btn-outline" href="{{ url_for('hazard_map') }}">Explore map</a></div></section>
+<div class="table-panel"><div class="table-heading"><div><h2>My reports</h2><p>{{ reports|length }} report(s) submitted</p></div></div>
+{% if reports %}<div class="responsive-table"><table><thead><tr><th>Report</th><th>Category</th><th>Submitted</th><th>Risk</th><th>Status</th><th></th></tr></thead><tbody>{% for r in reports %}<tr><td><b>PG-{{ '%04d'|format(r.id) }}</b><small>{{ r.location_name or 'Road location' }}</small></td><td>{{ r.category }}</td><td>{{ r.created_at }}</td><td><span class="risk-pill {{ 'risk-high' if r.risk_score >= 70 else ('risk-medium' if r.risk_score >= 50 else 'risk-low') }}">{{ r.risk_score }}</span></td><td><span class="status status-{{ r.status|lower|replace(' ','-') }}">{{ r.status }}</span></td><td><a class="text-link" href="{{ url_for('report_detail', report_id=r.id) }}">Open →</a></td></tr>{% endfor %}</tbody></table></div>{% else %}<div class="empty-state"><div class="empty-icon">⌖</div><h3>No reports yet</h3><p>When you report a road hazard, it will appear here.</p><a class="btn btn-primary" href="{{ url_for('report_hazard') }}">Submit a report</a></div>{% endif %}
+</div>
+{% endblock %}
